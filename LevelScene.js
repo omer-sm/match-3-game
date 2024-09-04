@@ -4,7 +4,6 @@ class LevelScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('bg', 'assets/bg_cropped.png')
         this.load.image('tile', 'assets/UI/7.png')
         this.load.image('tileOverlay', 'assets/UI/1.png')
         this.load.image('candy1', 'assets/ico/3.png')
@@ -74,6 +73,8 @@ class LevelScene extends Phaser.Scene {
     }
 
     regenerateCandy(y, x) {
+        this.sound.stopByKey('swoosh')
+        this.sound.play('swoosh')
         const newType = Math.floor(Math.random() * 4 + 1)
         const w = gameState.candyGrid[x][y].displayWidth, h = gameState.candyGrid[x][y].displayHeight
         gameState.candyGrid[x][y].candyType = newType
@@ -86,12 +87,14 @@ class LevelScene extends Phaser.Scene {
             ease: 'ease-in-out',
             duration: 100,
             onComplete: () => {
-                setTimeout(() => gameState.activeTweens--, 100)
+                setTimeout(() => gameState.activeTweens--, 250)
             }
         })
     }
 
     switchCandies(y1, x1, y2, x2, duration) {
+        this.sound.stopByKey('swoosh')
+        this.sound.play('swoosh')
         //console.log(`switching (${y1}, ${x1}) and (${y2}, ${x2})`)
         const candy1 = gameState.candyGrid[x1][y1]
         const candy2 = gameState.candyGrid[x2][y2]
@@ -104,7 +107,7 @@ class LevelScene extends Phaser.Scene {
             duration: duration,
             ease: 'Power2',
             onComplete: () => {
-                setTimeout(() => gameState.activeTweens--, 100)
+                setTimeout(() => gameState.activeTweens--, 250)
             }
         })
         this.tweens.add({
@@ -178,6 +181,8 @@ class LevelScene extends Phaser.Scene {
         for (let row = 0; row < gameState.candyGrid.length; row++) {
             for (let col = 0; col < gameState.candyGrid[0].length; col++) {
                 if (gameState.candyGrid[row][col].isMarked) {
+                    this.sound.stopByKey('pop')
+                    this.sound.play('pop', {seek: 0.23})
                     const candy = gameState.candyGrid[row][col]
                     const fallingCandy = this.physics.add.image(candy.x, candy.y, `candy${candy.candyType}`)
                     fallingCandy.setDisplaySize(candy.displayWidth, candy.displayHeight)
@@ -234,6 +239,7 @@ class LevelScene extends Phaser.Scene {
         )
         const flag = wereTwoAdjacentTilesSelectedInSuccession
         if (flag) {
+            this.sound.play('swoosh')
             gameState.tileOverlay.setAlpha(0)
             // switch the candies
             this.switchCandies(gameState.prevTile[0], gameState.prevTile[1], 

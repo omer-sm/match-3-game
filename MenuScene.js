@@ -7,6 +7,8 @@ class MenuScene extends Phaser.Scene {
         this.load.image('bg', 'assets/bg_cropped.png')
         this.load.image('btn', 'assets/UI/2.png')
         this.load.image('btnOverlay', 'assets/UI/3.png')
+        this.load.audio('pop', 'assets/audio/pop.mp3')
+        this.load.audio('swoosh', 'assets/audio/swoosh.mp3')
     }
 
     create() {
@@ -25,6 +27,7 @@ class MenuScene extends Phaser.Scene {
             fontFamily: 'Comic Sans MS', stroke: '#000000', strokeThickness: 6}).setOrigin(0.5, 0.5)
         playBtn.setInteractive()
         playBtn.on('pointerdown', () => {
+            this.sound.play('pop', {seek: 0.23})
             const playBtnOverlay = this.add.image(playX, playY, 'btnOverlay').setOrigin(0.5, 0.5).setScale(1.2, 1.2).setAlpha(0.5)
             this.input.on('pointerup', () => {
                 playBtnOverlay.destroy()
